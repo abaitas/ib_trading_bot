@@ -1,0 +1,30 @@
+{
+    "agent": {
+      "metrics_collection_interval": 60,
+      "run_as_user": "root"
+    },
+    "logs": {
+      "logs_collected": {
+        "files": {
+          "collect_list": [
+            {
+              "file_path": "/home/ubuntu/ib_trading_bot/logs/*.log",
+              "log_group_name": "trading-bot",
+              "log_stream_name": "{instance_id}"
+            },
+            {
+              "file_path": "/var/lib/docker/containers/*/*.log",
+              "log_group_name": "docker",
+              "log_stream_name": "{instance_id}"
+            },
+            {
+              "file_path": "/var/log/syslog",
+              "log_group_name": "system",
+              "log_stream_name": "{instance_id}"
+            }
+          ]
+        }
+      }
+    }
+  }
+  

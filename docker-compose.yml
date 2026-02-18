@@ -1,0 +1,59 @@
+services:
+
+  db:
+    image: postgres:15
+    container_name: trading-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U botuser -d trading"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    environment:
+      POSTGRES_DB: trading
+      POSTGRES_USER: botuser
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}  # Override via .env in production
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+    restart: always
+
+
+  bot:
+    build: .
+    container_name: trading-bot
+    healthcheck:
+      test: ["CMD", "python", "-c", "import broker, strategy; print('ok')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+    depends_on:
+      - db
+
+    environment:
+      DB_HOST: db
+      DB_NAME: trading
+      DB_USER: botuser
+      DB_PASSWORD: ${DB_PASSWORD:-changeme}  # Override via .env in production
+      IB_HOST: host.docker.internal
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    volumes:
+      # Share application logs with the host so CloudWatch can read daily log files
+      - ./logs:/app/logs
+
+    restart: always
+
+
+volumes:
+  postgres-data:
+

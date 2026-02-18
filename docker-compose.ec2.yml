@@ -1,0 +1,18 @@
+# Shared instance: uses 5433 for Postgres to avoid conflict with prod on 5432
+# Unique container names to avoid conflict with trading-system (trading-db, trading-bot)
+services:
+  db:
+    container_name: ib_trading_bot-db
+    ports: !override
+      - "5433:5432"
+
+  bot:
+    container_name: ib_trading_bot-bot
+    network_mode: host
+
+    environment:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5433
+      IB_HOST: 127.0.0.1
+      IB_PORT: 4001
+

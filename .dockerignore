@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+
+# MacOS
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Environment
+.env
+
+# Testing
+tests/
+test_*.py
+
+# Docker
+*.pid
